@@ -1,7 +1,7 @@
 import 'dart:core';
 import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
-
+import 'package:vector_math/vector_math.dart' as math;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -83,9 +83,9 @@ class _HomePageState extends State<FirstPage> {
           ],
         ),
       ),
-          
-        // 바텀 네비게이션 바 주석
-          body: _pages[_index],
+
+      // 바텀 네비게이션 바 주석
+      body: _pages[_index],
       //     bottomNavigationBar: BottomNavigationBar(
       //       onTap: (index) {
       //         setState(() {
@@ -161,200 +161,278 @@ class Page1_State extends State<Page1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            // 2인 3인 토글 스위치
-            // ToggleSwitch(
-            //   minWidth: 70.0,
-            //   cornerRadius: 20.0,
-            //   activeBgColor: Colors.cyan,
-            //   activeFgColor: Colors.white,
-            //   inactiveBgColor: Colors.grey,
-            //   inactiveFgColor: Colors.white,
-            //   labels: ['2인', '3인이상'],
-            //   icons: [Icons.person, Icons.accessible],
-            //   onToggle: (index) {
-            //     print('switched to: $index');
-            //   },
-            // ),
+      body: Column(mainAxisAlignment: MainAxisAlignment.center, children: <
+          Widget>[
+        // 2인 3인 토글 스위치
+        // ToggleSwitch(
+        //   minWidth: 70.0,
+        //   cornerRadius: 20.0,
+        //   activeBgColor: Colors.cyan,
+        //   activeFgColor: Colors.white,
+        //   inactiveBgColor: Colors.grey,
+        //   inactiveFgColor: Colors.white,
+        //   labels: ['2인', '3인이상'],
+        //   icons: [Icons.person, Icons.accessible],
+        //   onToggle: (index) {
+        //     print('switched to: $index');
+        //   },
+        // ),
 
-            // 이미지 버튼
-            ClipOval(
-              child: Container(
-                width: 250.0,
-                height: 250.0,
-                margin: EdgeInsets.all(50.0),
-                padding: EdgeInsets.all(5.0),
-                decoration: BoxDecoration(
-                  // border: Border.all(color: Colors.black),
-                  image: DecorationImage(
-                      image: AssetImage('assets/halloween_button.png')),
-                  borderRadius: BorderRadius.circular(150),
-                  // <List> boxShadow
-                  boxShadow: [
-                    BoxShadow(color: Colors.grey, offset: Offset(5, 5)),
-                    BoxShadow(color: Colors.black, offset: Offset(0, 0))
-                  ],
-                ),
-                child: FlatButton(
-                    padding: EdgeInsets.all(1.0),
-                    onPressed: () {
-                      _incrementCounter();
-
-                      print(Total_touchCount);
-                      print(Turn_touch);
-
-                      // 정해진 숫자가 되면 당첨 알림창 띄움
-                      if (Total_touchCount == 3) {
-
-                        showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                content: SingleChildScrollView(
-                                  child: ListBody(
-                                    children: <Widget>[
-                                      Text('Alert Dialog'),
-                                      Text('당첨~~~'),
-                                    ],
-                                  ),
-                                ),
-                                actions: <Widget>[
-                                  FlatButton(
-                                    child: Text('OK'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                              transitionDuration:
-                              Duration(milliseconds: 300);
-                            });
-                        init_TotalCount();
-                        init_TurnCount();
-                      }
-                    },
-                    child: null),
-              ),
-            ),
-
-            Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(30),
-                  child: Text(
-                    '현재 터치횟수는 : $Turn_touch',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
+        // 이미지 버튼
+        ClipOval(
+          child: Container(
+            width: 250.0,
+            height: 250.0,
+            margin: EdgeInsets.all(50.0),
+            padding: EdgeInsets.all(5.0),
+            decoration: BoxDecoration(
+              // border: Border.all(color: Colors.black),
+              image: DecorationImage(
+                  image: AssetImage('assets/halloween_button.png')),
+              borderRadius: BorderRadius.circular(150),
+              // <List> boxShadow
+              boxShadow: [
+                BoxShadow(color: Colors.grey, offset: Offset(5, 5)),
+                BoxShadow(color: Colors.black, offset: Offset(0, 0))
               ],
             ),
+            child: FlatButton(
+                padding: EdgeInsets.all(1.0),
+                onPressed: () {
+                  _incrementCounter();
 
-            // 감소 버튼
-            Container(
-              padding: EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      FloatingActionButton(
-                        child: Icon(
-                          Icons.do_disturb_on_rounded,
-                          size: 40.0,
-                        ),
-                        backgroundColor: Colors.black,
-                        onPressed: () {
-                          _decrementCounter(); // 카운트 증가
-                          print(Total_touchCount);
-                          print(Turn_touch);
+                  print(Total_touchCount);
+                  print(Turn_touch);
+
+                  // 정해진 숫자가 되면 당첨 알림창 띄움
+                  if (Total_touchCount == 3) {
+                    showGeneralDialog(
+                        context: context,
+                        pageBuilder: (context, anim1, anim2) {},
+                        barrierDismissible: true,
+                        barrierColor: Colors.black.withOpacity(0.4),
+                        barrierLabel: '',
+                        transitionBuilder: (context, anim1, anim2, child) {
+                          return Transform.rotate(
+                            angle: math.radians(anim1.value * 360),
+                            child: Opacity(
+                              opacity: anim1.value,
+                              child: AlertDialog(
+                                shape: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(16.0)),
+                                title: Text('당첨!!',),
+                                content: Container(
+                                  width: 300.0,
+                                  height: 300.0,
+
+                                  decoration: BoxDecoration(
+                                    // border: Border.all(color: Colors.black),
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            'assets/halloween_gif.gif')),
+                                    borderRadius: BorderRadius.circular(150),
+                                    // <List> boxShadow
+
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
                         },
-                      ),
-                    ],
-                  ),
-                  Column(
+                        transitionDuration: Duration(milliseconds: 300));
+                    // showDialog(
+                    //     context: context,
+                    //     barrierDismissible: false,
+                    //     builder: (BuildContext context) {
+                    //       return AlertDialog(
+                    //         content: SingleChildScrollView(
+                    //           child: ListBody(
+                    //             children: <Widget>[
+                    //               Text('Alert Dialog'),
+                    //               Text('당첨~~~'),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //         actions: <Widget>[
+                    //           FlatButton(
+                    //             child: Text('OK'),
+                    //             onPressed: () {
+                    //               Navigator.of(context).pop();
+                    //             },
+                    //           ),
+                    //         ],
+                    //       );
+                    //       transitionDuration:
+                    //       Duration(milliseconds: 300);
+                    //     });
+                    init_TotalCount();
+                    init_TurnCount();
+                  }
+                },
+                child: null),
+          ),
+        ),
 
-                    children: [
-                      Container(
-                        width: 150,
-                        height: 50,
-                        child: RaisedButton(
+        Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(30),
+              child: Text(
+                '현재 터치횟수는 : $Turn_touch',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+          ],
+        ),
 
-                          child: Text(
-
-                            '턴 종료',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25,
-                                color: Colors.white),
-                          ),
-                          color: Colors.black,
-                          onPressed: () {
-                            if (Turn_touch == 0) {
-                              showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text('No touch'),
-                                      content: SingleChildScrollView(
-                                        child: ListBody(
-                                          children: <Widget>[
-                                            Text('Alert Dialog'),
-                                            Text('1번이상 터치 해야함'),
-                                          ],
-                                        ),
-                                      ),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                          child: Text('OK'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            } else {
-                              showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text('턴이 종료 됩니다.'),
-                                      content: SingleChildScrollView(
-                                        child: ListBody(
-                                          children: <Widget>[],
-                                        ),
-                                      ),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                          child: Text('OK'),
-                                          onPressed: () {
-                                            init_TurnCount();
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            }
-                          },
-                        ),
-                      ),
-                    ],
+        // 감소 버튼
+        Container(
+          padding: EdgeInsets.all(20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(
+                children: [
+                  FloatingActionButton(
+                    child: Icon(
+                      Icons.do_disturb_on_rounded,
+                      size: 40.0,
+                    ),
+                    backgroundColor: Colors.black,
+                    onPressed: () {
+                      _decrementCounter(); // 카운트 증가
+                      print(Total_touchCount);
+                      print(Turn_touch);
+                    },
                   ),
                 ],
               ),
-            ),
-          ]),
+              Column(
+                children: [
+                  Container(
+                    width: 150,
+                    height: 50,
+                    child: RaisedButton(
+                      child: Text(
+                        '턴 종료',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                            color: Colors.white),
+                      ),
+                      color: Colors.black,
+                      onPressed: () {
+                        // 터치를 하지않고 턴을 종료 할 경우
+                        if (Turn_touch == 0) {
+                          showGeneralDialog(
+                              barrierColor: Colors.black.withOpacity(0.5),
+                              transitionBuilder: (context, a1, a2, widget) {
+                                return Transform.scale(
+                                  scale: a1.value,
+                                  child: Opacity(
+                                    opacity: a1.value,
+                                    child: AlertDialog(
+                                      shape: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0)),
+                                      title: Text('No touch'),
+                                      content: Text('1번이상 터치 해야함!!'),
+                                    ),
+                                  ),
+                                );
+                              },
+                              transitionDuration: Duration(milliseconds: 200),
+                              barrierDismissible: true,
+                              barrierLabel: '',
+                              context: context,
+                              pageBuilder:
+                                  (context, animation1, animation2) {});
+
+                          // showDialog(
+                          //     context: context,
+                          //     barrierDismissible: false,
+                          //     builder: (BuildContext context) {
+                          //       return AlertDialog(
+                          //         title: Text('No touch'),
+                          //         content: SingleChildScrollView(
+                          //           child: ListBody(
+                          //             children: <Widget>[
+                          //               Text('Alert Dialog'),
+                          //               Text('1번이상 터치 해야함'),
+                          //             ],
+                          //           ),
+                          //         ),
+                          //         actions: <Widget>[
+                          //           FlatButton(
+                          //             child: Text('OK'),
+                          //             onPressed: () {
+                          //               Navigator.of(context).pop();
+                          //             },
+                          //           ),
+                          //         ],
+                          //       );
+                          //     });
+                        } else {
+                          showGeneralDialog(
+                              barrierColor: Colors.black.withOpacity(0.5),
+                              transitionBuilder: (context, a1, a2, widget) {
+                                return Transform.scale(
+                                  scale: a1.value,
+                                  child: Opacity(
+                                    opacity: a1.value,
+                                    child: AlertDialog(
+                                      shape: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0)),
+                                      title: Text('턴 종료'),
+                                      content: Text('턴이 종료됩니다'),
+                                    ),
+                                  ),
+                                );
+                              },
+                              transitionDuration: Duration(milliseconds: 200),
+                              barrierDismissible: true,
+                              barrierLabel: '',
+                              context: context,
+                              pageBuilder:
+                                  (context, animation1, animation2) {});
+
+                          // showDialog(
+                          //     context: context,
+                          //     barrierDismissible: false,
+                          //     builder: (BuildContext context) {
+                          //       return AlertDialog(
+                          //         title: Text('턴이 종료 됩니다.'),
+                          //         content: SingleChildScrollView(
+                          //           child: ListBody(
+                          //             children: <Widget>[],
+                          //           ),
+                          //         ),
+                          //         actions: <Widget>[
+                          //           FlatButton(
+                          //             child: Text('OK'),
+                          //             onPressed: () {
+                          //               init_TurnCount();
+                          //               Navigator.of(context).pop();
+                          //             },
+                          //           ),
+                          //         ],
+                          //       );
+                          //     });
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ]),
     );
   }
 }
