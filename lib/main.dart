@@ -83,29 +83,31 @@ class _HomePageState extends State<FirstPage> {
           ],
         ),
       ),
-      body: _pages[_index],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) {
-          setState(() {
-            _index = index; // 선택된 탭의 인덱스로 _index를 변경
-          });
-        },
-        currentIndex: _index, // 선택된 인덱스
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            title: Text('테마 1'),
-            icon: Icon(Icons.home),
-          ),
-          BottomNavigationBarItem(
-            title: Text('테마 2'),
-            icon: Icon(Icons.tag),
-          ),
-          // BottomNavigationBarItem(
-          //   title: Text('테마 3'),
-          //   icon: Icon(Icons.account_circle),
-          // ),
-        ],
-      ),
+          
+        // 바텀 네비게이션 바 주석
+          body: _pages[_index],
+      //     bottomNavigationBar: BottomNavigationBar(
+      //       onTap: (index) {
+      //         setState(() {
+      //           _index = index; // 선택된 탭의 인덱스로 _index를 변경
+      //         });
+      //       },
+      //       currentIndex: _index, // 선택된 인덱스
+      //       items: <BottomNavigationBarItem>[
+      //         BottomNavigationBarItem(
+      //           title: Text('테마 1'),
+      //           icon: Icon(Icons.home),
+      //         ),
+      //         BottomNavigationBarItem(
+      //           title: Text('테마 2'),
+      //           icon: Icon(Icons.tag),
+      //         ),
+      //     BottomNavigationBarItem(
+      //       title: Text('테마 3'),
+      //       icon: Icon(Icons.account_circle),
+      //     ),
+      //   ],
+      // ),
     );
   }
 }
@@ -160,7 +162,7 @@ class Page1_State extends State<Page1> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        // mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             // 2인 3인 토글 스위치
             // ToggleSwitch(
@@ -180,12 +182,21 @@ class Page1_State extends State<Page1> {
             // 이미지 버튼
             ClipOval(
               child: Container(
-                padding: EdgeInsets.all(50),
                 width: 250.0,
                 height: 250.0,
+                margin: EdgeInsets.all(50.0),
+                padding: EdgeInsets.all(5.0),
                 decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/halloween_button.png'))),
+                  // border: Border.all(color: Colors.black),
+                  image: DecorationImage(
+                      image: AssetImage('assets/halloween_button.png')),
+                  borderRadius: BorderRadius.circular(150),
+                  // <List> boxShadow
+                  boxShadow: [
+                    BoxShadow(color: Colors.grey, offset: Offset(5, 5)),
+                    BoxShadow(color: Colors.black, offset: Offset(0, 0))
+                  ],
+                ),
                 child: FlatButton(
                     padding: EdgeInsets.all(1.0),
                     onPressed: () {
@@ -195,7 +206,8 @@ class Page1_State extends State<Page1> {
                       print(Turn_touch);
 
                       // 정해진 숫자가 되면 당첨 알림창 띄움
-                      if (Total_touchCount == 2) {
+                      if (Total_touchCount == 3) {
+
                         showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -231,99 +243,116 @@ class Page1_State extends State<Page1> {
 
             Column(
               children: [
-                Text(
-                  '현재 터치횟수는 : $Turn_touch',
+                Container(
+                  padding: EdgeInsets.all(30),
+                  child: Text(
+                    '현재 터치횟수는 : $Turn_touch',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
                 ),
               ],
             ),
 
             // 감소 버튼
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    FloatingActionButton(
-                      child: Icon(
-                        Icons.do_disturb_on_rounded,
-                        size: 40.0,
+            Container(
+              padding: EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      FloatingActionButton(
+                        child: Icon(
+                          Icons.do_disturb_on_rounded,
+                          size: 40.0,
+                        ),
+                        backgroundColor: Colors.black,
+                        onPressed: () {
+                          _decrementCounter(); // 카운트 증가
+                          print(Total_touchCount);
+                          print(Turn_touch);
+                        },
                       ),
-                      backgroundColor: Colors.black,
-                      onPressed: () {
-                        _decrementCounter(); // 카운트 증가
+                    ],
+                  ),
+                  Column(
 
-                        print(Total_touchCount);
-                        print(Turn_touch);
-                      },
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    RaisedButton(
-                      child: Text(
-                        '턴 종료',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                            color: Colors.white),
-                      ),
-                      color: Colors.black,
-                      onPressed: () {
-                        if (Turn_touch == 0) {
-                          showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('No touch'),
-                                  content: SingleChildScrollView(
-                                    child: ListBody(
-                                      children: <Widget>[
-                                        Text('Alert Dialog'),
-                                        Text('1번이상 터치 해야함'),
+                    children: [
+                      Container(
+                        width: 150,
+                        height: 50,
+                        child: RaisedButton(
+
+                          child: Text(
+
+                            '턴 종료',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25,
+                                color: Colors.white),
+                          ),
+                          color: Colors.black,
+                          onPressed: () {
+                            if (Turn_touch == 0) {
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('No touch'),
+                                      content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[
+                                            Text('Alert Dialog'),
+                                            Text('1번이상 터치 해야함'),
+                                          ],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
                                       ],
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: Text('OK'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              });
-                        } else {
-                          showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('턴이 종료 됩니다.'),
-                                  content: SingleChildScrollView(
-                                    child: ListBody(
-                                      children: <Widget>[],
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: Text('OK'),
-                                      onPressed: () {
-                                        init_TurnCount();
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              });
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                                    );
+                                  });
+                            } else {
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('턴이 종료 됩니다.'),
+                                      content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[],
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            init_TurnCount();
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ]),
     );
